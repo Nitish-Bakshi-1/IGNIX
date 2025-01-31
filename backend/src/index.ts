@@ -1,9 +1,7 @@
+import streamResponse from "./stream";
 import dotenv from "dotenv";
-
 dotenv.config();
-
 const API_KEY_RES = process.env.API_KEY;
-
 async function sendRequest() {
   try {
     const response = await fetch(`${process.env.LLM_URL}`, {
@@ -20,13 +18,11 @@ async function sendRequest() {
             content: "write code for a simple todo app",
           },
         ],
+        stream: true,
       }),
     });
-    if (!response) {
-      console.log("ERROR: no response");
-    }
-    const data = await response.json();
-    console.log(data.choices[0].message);
+
+    await streamResponse(response);
   } catch (error) {
     console.log(`ERROR: ${error}`);
   }
