@@ -1,5 +1,6 @@
+import { baseNodePrompt } from "./defaults/node";
 import { baseReactPrompt } from "./defaults/react";
-import { getSystemPrompt } from "./prompts";
+import { DEFAULT_PROMPT, getSystemPrompt } from "./prompts";
 import streamResponse from "./stream";
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
@@ -10,8 +11,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-const API_KEY_RES = process.env.API_KEY;
-const { LLM_URL, MODEL } = process.env;
+const { LLM_URL, MODEL, API_KEY } = process.env;
 
 app.post("/template", async function (req: Request, res: Response) {
   const prompt: string = req.body.prompt;
@@ -22,7 +22,7 @@ app.post("/template", async function (req: Request, res: Response) {
       return;
     }
 
-    if (!LLM_URL || !MODEL || !API_KEY_RES) {
+    if (!LLM_URL || !MODEL || !API_KEY) {
       res.status(500).json({ error: "Missing API configuration" });
       return;
     }
@@ -30,7 +30,7 @@ app.post("/template", async function (req: Request, res: Response) {
     const response = await fetch(LLM_URL, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${API_KEY_RES}`,
+        Authorization: `Bearer ${API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -59,7 +59,26 @@ app.post("/template", async function (req: Request, res: Response) {
       res.json({ error: "Invalid response format from LLM" });
     }
 
-    res.json({ result: aiResponse });
+    if (aiResponse === "react") {
+      res.json({
+        prompts: [DEFAULT_PROMPT, baseReactPrompt],
+      });
+
+      return;
+    }
+    if (aiResponse === "node") {
+      res.json({
+        prompts: baseNodePrompt,
+      });
+
+      return;
+    }
+
+    res.json({
+      message: "can't access this",
+    });
+
+    return;
   } catch (error: any) {
     console.error("ERROR:", error.message || error);
     res
@@ -69,43 +88,42 @@ app.post("/template", async function (req: Request, res: Response) {
   }
 });
 
-async function sendRequest() {
-  try {
-    const response = await fetch(`${process.env.LLM_URL}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${API_KEY_RES}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: `${process.env.MODEL}`,
-        messages: [
-          {
-            role: "user",
-            content:
-              "For all designs I ask you to make, have them be beautiful, not cookie cutter. Make webpages that are fully featured and worthy for production.\n\nBy default, this template supports JSX syntax with Tailwind CSS classes, React hooks, and Lucide React for icons. Do not install other packages for UI themes, icons, etc unless absolutely necessary or I request them.\n\nUse icons from lucide-react for logos.\n\nUse stock photos from unsplash where appropriate, only valid URLs you know exist. Do not download the images, only link to them in image tags.",
-          },
+// async function sendRequest() {
+//   try {
+//     const response = await fetch(`${process.env.LLM_URL}`, {
+//       method: "POST",
+//       headers: {
+//         Authorization: `Bearer ${API_KEY}`,
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         model: `${process.env.MODEL}`,
+//         messages: [
+//           {
+//             role: "user",
+//             content: "",
+//           },
 
-          {
-            role: "user",
-            content: `Here is an artifact that contains all files of the project visible to you.\nConsider the contents of ALL files in the project.\n\n{${baseReactPrompt}} \n\nHere is a list of files that exist on the file system but are not being shown to you:\n\n - .gitignore\n - package-lock.json -.bolt/prompt`,
-          },
-          {
-            role: "user",
-            content: "create a todo app with best styling ",
-          },
-        ],
-        stream: true,
-      }),
-    });
+//           {
+//             role: "user",
+//             content: `Here is an artifact that contains all files of the project visible to you.\nConsider the contents of ALL files in the project.\n\n{${baseReactPrompt}} \n\nHere is a list of files that exist on the file system but are not being shown to you:\n\n - .gitignore\n - package-lock.json -.bolt/prompt`,
+//           },
+//           {
+//             role: "user",
+//             content: "create a backend for a todo app in express",
+//           },
+//         ],
+//         stream: true,
+//       }),
+//     });
 
-    await streamResponse(response);
-  } catch (error) {
-    console.log(`ERROR: ${error}`);
-  }
-}
+//     await streamResponse(response);
+//   } catch (error) {
+//     console.log(`ERROR: ${error}`);
+//   }
+// }
 
-sendRequest();
+// sendRequest();
 
 app.listen(3000, () => {
   console.log("listening");
