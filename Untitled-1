@@ -1,0 +1,188 @@
+// Streaming response:
+
+// Certainly! To create an app similar to Excalidraw, we will use React with TypeScript and custom styling. The app will allow users to draw shapes and lines on a canvas. Below is the setup and initial code for the app:
+
+// 1. Install necessary dependencies:
+
+// ```shell
+// npm install lucide-react
+// ```
+
+// 2. Modify the existing files and add new files as follows:
+
+// App.tsx:
+// ```tsx
+// import React, { useRef, useEffect } from 'react';
+// import { ArrowLeft, Circle, PenTool, Line } from 'lucide-react';
+
+// import './App.css';
+
+// const shapes = [ArrowLeft, Circle, PenTool, Line];
+
+// function App() {
+//   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+//   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+//   const selectedShape = useRef<number>(0);
+
+//   useEffect(() => {
+//     if (canvasRef.current) {
+//       const canvas = canvasRef.current;
+//       canvas.width = window.innerWidth;
+//       canvas.height = window.innerHeight;
+//       const ctx = canvas.getContext('2d');
+//       if (ctx) {
+//         ctxRef.current = ctx;
+//       }
+//     }
+//   }, []);
+
+//   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+//     const ctx = ctxRef.current;
+//     const shapeIndex = selectedShape.current;
+
+//     if (ctx && shapes[shapeIndex] && canvasRef.current) {
+//       const { offsetX, offsetY } = event.nativeEvent;
+//       ctx.fillStyle = '#000'; // Set color
+//       ctx.beginPath();
+//       shapes[shapeIndex]({
+//         ctx,
+//         size: 24,
+//         x: offsetX,
+//         y: offsetY,
+//       });
+//       ctx.fill();
+//     }
+//   };
+
+//   return (
+//     <div className="App">
+//       <div className="toolbox">
+//         {shapes.map((Shape, index) => (
+//           <div key={index} className={`tool ${selectedShape.current === index ? 'selected' : ''}`} onClick={() => selectedShape.current = index}>
+//             <Shape size={32} />
+//           </div>
+//         ))}
+//       </div>
+//       <canvas ref={canvasRef} onClick={handleCanvasClick}></canvas>
+//     </div>
+//   );
+// }
+
+// export default App;
+// ```
+
+// App.css:
+// ```css
+// .App {
+//   display: flex;
+//   height: 100vh;
+// }
+
+// .toolbox {
+//   display: flex;
+//   flex-direction: column;
+//   padding: 16px;
+//   background-color: #f0f0f0;
+// }
+
+// .tool {
+//   cursor: pointer;
+//   padding: 8px;
+// }
+
+// .tool.selected {
+//   background-color: #e0e0e0;
+// }
+// ```
+
+// 3. Add a new file for the app-specific styles:
+
+// index.css:
+// ```css
+// body {
+//   margin: 0;
+//   font-family: 'Arial', sans-serif;
+// }
+
+// canvas {
+//   cursor: crosshair;
+//   border: 1px solid #ccc;
+// }
+// ```
+
+// 4. Update the ESLint configuration to ignore the new CSS file:
+
+// eslint.config.js:
+// ```js
+// import js from '@eslint/js';
+// import globals from 'globals';
+// import reactHooks from 'eslint-plugin-react-hooks';
+// import reactRefresh from 'eslint-plugin-react-refresh';
+// import tseslint from 'typescript-eslint';
+
+// export default tseslint.config(
+//   { ignores: ['dist', '*.css'] }, // Add '*.css' to ignore CSS files
+//   {
+//     extends: [js.configs.recommended, ...tseslint.configs.recommended],
+//     files: ['**/*.{ts,tsx}'],
+//     languageOptions: {
+//       ecmaVersion: 2020,
+//       globals: globals.browser,
+//     },
+//     plugins: {
+//       'react-hooks': reactHooks,
+//       'react-refresh': reactRefresh,
+//     },
+//     rules: {
+//       ...reactHooks.configs.recommended.rules,
+//       'react-refresh/only-export-components': [
+//         'warn',
+//         { allowConstantExport: true },
+//       ],
+//     },
+//   }
+// );
+// ```
+
+// 5. Create a new file for the specific canvas styles:
+
+// index.html:
+// ```html
+// <!doctype html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8" />
+//   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+//   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+//   <title>Excalidraw Like Canvas</title>
+// </head>
+// <body>
+//   <div id="root"></div>
+//   <canvas id="canvas"></canvas>
+// </body>
+// </html>
+// ```
+
+// 6. Finally, update the Vite config file to import the new CSS file and Vite React plugin for JSX support:
+
+// vite.config.ts:
+// ```tsx
+// import { defineConfig } from 'vite';
+// import react from '@vitejs/plugin-react';
+
+// // https://vitejs.dev/config/
+// export default defineConfig({
+//   plugins: [react()],
+//   optimizeDeps: {
+//     exclude: ['lucide-react'],
+//   },
+//   css: {
+//     modules: {
+//       scopeBehaviour: 'local',
+//     },
+//   },
+// });
+// ```
+
+// This setup provides a starting point for creating a basic drawing app similar to Excalidraw using React with TypeScript. Feel free to expand upon this foundation with additional features and styling as needed!
+// Stream finished.

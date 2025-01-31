@@ -18,7 +18,13 @@ export default async function streamResponse(response: Response) {
     for (const line of lines) {
       if (line.startsWith("data: ")) {
         try {
-          const json = JSON.parse(line.replace("data: ", ""));
+          // Ignore the "[DONE]" token
+          const lineContent = line.replace("data: ", "");
+          if (lineContent === "[DONE]") {
+            continue; // Skip this line and continue the loop
+          }
+
+          const json = JSON.parse(lineContent);
           if (
             json.choices &&
             json.choices[0].delta &&
