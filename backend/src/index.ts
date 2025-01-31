@@ -17,7 +17,7 @@ async function sendRequest() {
         messages: [
           {
             role: "user",
-            content: "What is 2+2",
+            content: "write code for a simple todo app",
           },
         ],
       }),
