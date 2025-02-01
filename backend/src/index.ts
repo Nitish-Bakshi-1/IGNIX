@@ -8,11 +8,10 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-const { LLM_URL, MODEL, API_KEY } = process.env;
+const { LLM_URL, MODEL, API_KEY, PORT } = process.env;
 
 app.post("/template", async function (req: Request, res: Response) {
   const prompt: string = req.body.prompt;
-
   try {
     if (!prompt) {
       res.status(400).json({ error: "Prompt is required" });
@@ -83,6 +82,6 @@ app.post("/template", async function (req: Request, res: Response) {
   }
 });
 
-app.listen(process.env.PORT, () => {
-  console.log("listening on PORT:" + process.env.PORT);
+app.listen(PORT, () => {
+  console.log("listening on PORT:" + PORT);
 });
