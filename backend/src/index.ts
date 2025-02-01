@@ -1,11 +1,8 @@
 import { baseNodePrompt } from "./defaults/node";
 import { baseReactPrompt } from "./defaults/react";
 import { DEFAULT_PROMPT, getSystemPrompt } from "./prompts";
-import streamResponse from "./stream";
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
-import fs from "fs";
-
 dotenv.config();
 
 const app = express();
@@ -87,42 +84,5 @@ app.post("/template", async function (req: Request, res: Response) {
 });
 
 app.listen(process.env.PORT, () => {
-  console.log("listening");
+  console.log("listening on PORT:" + process.env.PORT);
 });
-
-// async function sendRequest() {
-//   try {
-//     const response = await fetch(`${process.env.LLM_URL}`, {
-//       method: "POST",
-//       headers: {
-//         Authorization: `Bearer ${API_KEY}`,
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         model: `${process.env.MODEL}`,
-//         messages: [
-//           {
-//             role: "user",
-//             content: "",
-//           },
-
-//           {
-//             role: "user",
-//             content: `Here is an artifact that contains all files of the project visible to you.\nConsider the contents of ALL files in the project.\n\n{${baseReactPrompt}} \n\nHere is a list of files that exist on the file system but are not being shown to you:\n\n - .gitignore\n - package-lock.json -.bolt/prompt`,
-//           },
-//           {
-//             role: "user",
-//             content: "create a backend for a todo app in express",
-//           },
-//         ],
-//         stream: true,
-//       }),
-//     });
-
-//     await streamResponse(response);
-//   } catch (error) {
-//     console.log(`ERROR: ${error}`);
-//   }
-// }
-
-// sendRequest();
