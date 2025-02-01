@@ -3,7 +3,8 @@ import { baseReactPrompt } from "./defaults/react";
 import { DEFAULT_PROMPT, getSystemPrompt } from "./prompts";
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
-import fs from "fs";
+import streamResponse from "./stream";
+
 dotenv.config();
 
 const app = express();
@@ -11,7 +12,7 @@ app.use(express.json());
 
 const { LLM_URL, MODEL, API_KEY, PORT } = process.env;
 
-app.post("/template", async function (req: Request, res: Response) {
+app.post("/template", async (req: Request, res: Response) => {
   const prompt: string = req.body.prompt;
   try {
     if (!prompt) {
@@ -58,14 +59,21 @@ app.post("/template", async function (req: Request, res: Response) {
 
     if (aiResponse === "react") {
       res.json({
-        prompts: [DEFAULT_PROMPT, baseReactPrompt],
+        prompts: [
+          DEFAULT_PROMPT,
+          `Here is an artifact that contains all files of the project visible to you.\nConsider the contents of ALL files in the project.\n\n${baseReactPrompt}\n\nHere is a list of files that exist on the file system but are not being shown to you:\n\n  - .gitignore\n  - package-lock.json\n`,
+        ],
+        uiPrompts: [baseReactPrompt],
       });
 
       return;
     }
     if (aiResponse === "node") {
       res.json({
-        prompts: baseNodePrompt,
+        prompts: [
+          `Here is an artifact that contains all files of the project visible to you.\nConsider the contents of ALL files in the project.\n\n${baseReactPrompt}\n\nHere is a list of files that exist on the file system but are not being shown to you:\n\n  - .gitignore\n  - package-lock.json\n`,
+        ],
+        uiPrompts: [baseNodePrompt],
       });
       return;
     }
