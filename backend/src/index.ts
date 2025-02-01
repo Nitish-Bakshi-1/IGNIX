@@ -3,6 +3,7 @@ import { baseReactPrompt } from "./defaults/react";
 import { DEFAULT_PROMPT, getSystemPrompt } from "./prompts";
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
+import fs from "fs";
 dotenv.config();
 
 const app = express();

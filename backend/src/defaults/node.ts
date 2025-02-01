@@ -1,11 +1,11 @@
 export const baseNodePrompt = `
-<boltArtifact id="project-import" title="Project Files">
-  <boltAction type="file" filePath="index.js">
+<ignixArtifact id="project-import" title="Project Files">
+  <ignixAction type="file" filePath="index.js">
     // run \`node index.js\` in the terminal
     console.log(\`Hello Node.js v\${process.versions.node}!\`);
-  </boltAction>
+  </ignixAction>
 
-  <boltAction type="file" filePath="package.json">
+  <ignixAction type="file" filePath="package.json">
     {
       "name": "node-starter",
       "private": true,
@@ -13,6 +13,6 @@ export const baseNodePrompt = `
         "test": "echo \\"Error: no test specified\\" && exit 1"
       }
     }
-  </boltAction>
-</boltArtifact>
+  </ignixAction>
+</ignixArtifact>
 `;
