@@ -70,14 +70,12 @@ app.post("/template", async function (req: Request, res: Response) {
       res.json({
         prompts: baseNodePrompt,
       });
-
       return;
     }
 
     res.json({
       message: "can't access this",
     });
-
     return;
   } catch (error: any) {
     console.error("ERROR:", error.message || error);
@@ -86,6 +84,10 @@ app.post("/template", async function (req: Request, res: Response) {
       .json({ error: error.message || "An unexpected error occurred" });
     return;
   }
+});
+
+app.listen(process.env.PORT, () => {
+  console.log("listening");
 });
 
 // async function sendRequest() {
@@ -124,7 +126,3 @@ app.post("/template", async function (req: Request, res: Response) {
 // }
 
 // sendRequest();
-
-app.listen(3000, () => {
-  console.log("listening");
-});
